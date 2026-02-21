@@ -1,0 +1,41 @@
+:root {
+    --bg-light: #f8fafc;
+    --card-bg: #ffffff;
+    --accent: #2563eb;
+    --danger: #e11d48;
+    --text-main: #1e293b;
+    --text-dim: #64748b;
+    --border: #e2e8f0;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+.container { max-width: 1200px; margin: 0 auto; }
+
+/* Navegação */
+.nav-tabs { border-bottom: 1px solid var(--border); margin-bottom: 30px; }
+.nav-link { color: var(--text-dim) !important; border: none !important; font-weight: 500; padding: 10px 20px; }
+.nav-link.active { background: transparent !important; color: var(--accent) !important; border-bottom: 2px solid var(--accent) !important; }
+
+/* Cards e Tabelas */
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); padding: 20px; }
+.table { width: 100%; border-collapse: collapse; background: var(--card-bg); }
+.table thead th { background: #f1f5f9; color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; padding: 12px; text-align: left; }
+.table tbody td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text-main); }
+
+/* Badges e Status */
+.badge { padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; }
+.status-pending { background: #fee2e2; color: #991b1b; }
+.status-reviewed { background: #dcfce7; color: #166534; }
+.bg-yolo { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+/* IA Texto */
+.ai-text { font-size: 0.85rem; color: #475569; line-height: 1.4; max-width: 300px; }
+.evidence-img { border: 1px solid var(--border); border-radius: 6px; transition: transform 0.2s; }
+.evidence-img:hover { transform: scale(1.1); }

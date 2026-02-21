@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Monitoring System | Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+            <h1>🚀 Driver Monitoring System <span style="color: var(--accent)">AI</span></h1>
+            <span class="badge status-reviewed">Data Insight Engine Active</span>
+        </div>
+
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item"><a class="nav-link" href="/">Real-time Logs</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/analytics">Fleet Analytics</a></li>
+        </ul>
+
+        <h2 class="mb-4" style="font-size: 1.2rem; color: var(--text-dim);">🚛 Driver Insights Summary - TRUCK_01</h2>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <h5 class="mb-4">Type Distribution</h5>
+                    <div style="position: relative; height:250px;">
+                        <canvas id="typeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <h5 class="mb-4">AI Accuracy (Human Verdict)</h5>
+                    <div style="position: relative; height:250px;">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <h5 class="mb-4">Peak Risk Hours</h5>
+                    <div style="position: relative; height:250px;">
+                        <canvas id="hourChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card text-center p-3" style="border-style: dashed; background: transparent;">
+                    <span class="text-dim">Total events analyzed by Driver Monitoring System: <strong>{{ type_counts.values()|sum }}</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const typeData = {{ type_counts | tojson }};
+        const hourData = {{ hour_counts | tojson }};
+        const compData = {{ comparison | tojson }};
+
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.borderColor = '#e2e8f0';
+
+        // Distribution Chart
+        new Chart(document.getElementById('typeChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(typeData),
+                datasets: [{
+                    data: Object.values(typeData),
+                    backgroundColor: ['#e11d48', '#f59e0b', '#2563eb', '#16a34a'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // NEW: Human vs AI Comparison Chart
+        new Chart(document.getElementById('comparisonChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Confirmed', 'Discarded', 'Pending'],
+                datasets: [{
+                    data: [compData.Confirmed, compData.Discarded, compData.Pending],
+                    backgroundColor: ['#16a34a', '#e11d48', '#cbd5e1'],
+                    borderWidth: 2
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Time Analysis Chart
+        new Chart(document.getElementById('hourChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(hourData).map(h => h + 'h'),
+                datasets: [{
+                    label: 'Events',
+                    data: Object.values(hourData),
+                    backgroundColor: '#2563eb',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

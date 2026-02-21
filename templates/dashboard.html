@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Monitoring System | Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Responsive Button Container */
+        .decision-wrapper {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap; /* Prevents buttons from cutting/breaking */
+            justify-content: center;
+        }
+
+        .btn-decision {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            white-space: nowrap; /* Keeps text on one line inside button */
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .btn-confirm { border: 1px solid #16a34a; color: #166534; }
+        .btn-confirm:hover { background: #dcfce7; }
+        
+        .btn-discard { border: 1px solid #e11d48; color: #991b1b; }
+        .btn-discard:hover { background: #fee2e2; }
+
+        .decision-final { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+            <h1>🚀 Driver Monitoring System <span style="color: var(--accent)">AI</span></h1>
+            <span class="badge" style="background: #e0f2fe; color: #0369a1;">Live Monitoring Active</span>
+        </div>
+
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item"><a class="nav-link active" href="/">Real-time Logs</a></li>
+            <li class="nav-item"><a class="nav-link" href="/analytics">Fleet Analytics</a></li>
+        </ul>
+
+        <div class="card p-0 overflow-hidden">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Timestamp</th>
+                        <th>Detection</th>
+                        <th>Evidence</th>
+                        <th>AI Audit (Qwen)</th>
+                        <th>Human Verdict</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                    <tr>
+                        <td>{{ event["id"] }}</td>
+                        <td>{{ event["timestamp"] }}</td>
+                        <td><span class="badge bg-yolo">{{ event["event_type"] }}</span></td>
+                        <td>
+                            {% if event["image_path"] %}
+                            <img src="{{ url_for('static', filename='captures/' + event['image_path']) }}" width="120" class="evidence-img">
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="ai-text">
+                                {% if event["ai_analysis"] %}{{ event["ai_analysis"] }}
+                                {% else %}<span class="text-muted italic">⏳ Processing...</span>{% endif %}
+                            </div>
+                        </td>
+                        
+                        <td style="min-width: 180px;">
+                            <div class="decision-wrapper">
+                                {% if event["human_decision"] == 'PENDING' %}
+                                    <a href="/update_decision/{{ event['id'] }}/Confirmed" class="btn-decision btn-confirm">✔ Confirm Risk</a>
+                                    <a href="/update_decision/{{ event['id'] }}/Discarded" class="btn-decision btn-discard">✖ Discard</a>
+                                {% else %}
+                                    <span class="decision-final {% if event['human_decision'] == 'Confirmed' %}text-success{% else %}text-danger{% endif %}">
+                                        {{ event["human_decision"] }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="badge {% if event['status'].lower() == 'pending' %}status-pending{% else %}status-reviewed{% endif %}">
+                                {{ event["status"] }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function checkRefresh() {
+            const content = document.body.innerHTML;
+            if (content.includes("Processing...")) {
+                setTimeout(() => { window.location.reload(); }, 10000);
+            }
+        }
+        window.onload = checkRefresh;
+    </script>
+</body>
+</html>
