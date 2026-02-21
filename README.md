@@ -10,7 +10,7 @@ A practical prototype that bridges real-time object detection with AI-driven for
 
 Watch a live demonstration of Driver Monitoring System in action:
 
-> **[REPLACE THIS WITH YOUR OBS VIDEO LINK OR YOUTUBE URL]**  
+> **[![Video](https://img.youtube.com/vi/R8lkKG2kQT8/0.jpg)](https://www.youtube.com/watch?v=R8lkKG2kQT8)**  
 > *This video shows real-time detection of risky behaviors (cell phone use / distraction), the automated AI audit process, and the management dashboard.*
 
 ---
